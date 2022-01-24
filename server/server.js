@@ -85,6 +85,7 @@ io.on('connection', (sock) => {
   });
 
   sock.on('choice', (text) => {
+    // Parameter indicates the users selection ['Rock', 'Paper', 'Scissors', 'Lizard', 'Spock', 'none']
     let isRoundReady = true;
     let roundResults = "";
     let currName = nameMap.get(sock.id);
