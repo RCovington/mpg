@@ -116,10 +116,10 @@ io.on('connection', (sock) => {
       total = totalMap.get(sock.id)
     }
     console.log("old total: " + total);
-    console.log("new total: " + text);
     total += text;
 
     totalMap.set(sock.id, total);
+    console.log("new total: " + total);
     io.emit('total', total + ":" + sock.id);
   });
 
