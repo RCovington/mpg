@@ -94,6 +94,11 @@ io.on('connection', (sock) => {
     if (nameMap.has(sock.id)) {
       choiceMap.set(sock.id, text);
     }
+    /*choiceMap Dump
+    choiceMap.forEach((element) => {
+      console.log("choiceMap element: " + element);
+    });
+    /*End choiceMap Dump*/
     nameMap.forEach(function (value, key) {
       if (text == "none") {
         io.emit('notReady', sock.id);
@@ -105,21 +110,28 @@ io.on('connection', (sock) => {
       }
       roundResults += "\n" + nameMap.get(key) + "->" + choiceMap.get(key);
     });
-    if (isRoundReady) {
+    if (isRoundReady && choiceMap.size > 1) {
       roundRes(io, sock);
     }
   });
 
   sock.on('total', (text) => {
     let total = 0;
-    if (totalMap.get(sock.id)) {
-      total = totalMap.get(sock.id)
+    if (totalMap.has(sock.id)) {
+      total = parseFloat(totalMap.get(sock.id));
     }
-    console.log("old total: " + total);
-    total += text;
+    console.log("current total: " + total);
+    console.log("adding total: " + text);
+    total += parseFloat(text);
 
-    totalMap.set(sock.id, total);
+    totalMap.set(sock.id, parseFloat(total));
     console.log("new total: " + total);
+    /*totalMap Dump
+    totalMap.forEach((element) => {
+      console.log("totalMap element: " + totalMap.get(element));
+    });
+    End totalMap Dump*/
+
     io.emit('total', total + ":" + sock.id);
   });
 
