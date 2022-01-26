@@ -160,7 +160,7 @@ const total = (text) => {
   if (usrSockId == sock.id) {
     localStorage.setItem('total', total);
     let totColor = (parseFloat(total) < 0) ? "#FACADE" : "#00FF00";
-    document.getElementById(sock.id).style.backgroundColor = totColor;
+    document.getElementById(sock.id).cells[2].style.backgroundColor = totColor;
   }
 };
 const writeEvent = (text) => {
@@ -198,13 +198,13 @@ const addButtonListeners = () => {
 
 function change(id) {
   var image = document.getElementById('rpsls');
-  image.src = './rpsls-all.png';
-  if (id == "none") { image.src = './rpsls-all.png' }
-  if (id == "Rock") { image.src = './rpsls-rock.png' }
-  if (id == "Paper") { image.src = './rpsls-paper.png' }
-  if (id == "Scissors") { image.src = './rpsls-scissors.png' }
-  if (id == "Lizard") { image.src = './rpsls-lizard.png' }
-  if (id == "Spock") { image.src = './rpsls-spock.png' }
+  image.src = './res//rpsls-all.png';
+  if (id == "none") { image.src = './res/rpsls-all.png' }
+  if (id == "Rock") { image.src = './res/rpsls-rock.png' }
+  if (id == "Paper") { image.src = './res/rpsls-paper.png' }
+  if (id == "Scissors") { image.src = './res/rpsls-scissors.png' }
+  if (id == "Lizard") { image.src = './res/rpsls-lizard.png' }
+  if (id == "Spock") { image.src = './res/rpsls-spock.png' }
 }
 
 writeEvent('Welcome to RPSLS, ' + localStorage.getItem('username') + "!");

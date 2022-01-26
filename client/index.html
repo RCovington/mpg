@@ -18,7 +18,7 @@
   <script src="fingerpose.js" type="text/javascript"></script>
   <!--  -->
   <!-- <script src="customGestures.js" type="module"></script> -->
-  <script src="customGestures.js" type="module"></script>
+  <!--  <script src="customGestures.js" type="module"></script> -->
 </head>
 
 <body>
@@ -125,8 +125,9 @@
               // ...and so on
               setTimeout(() => { estimateHands(); }, 1000 / config.video.fps);
             };
-      */
+      
       estimateHands();
+      */
       console.log("Starting predictions");
     }
 
@@ -190,7 +191,7 @@
   <h2 id="title" style="text-align: center;">Rock-Paper-Scissors-Lizard-Spock</h2>
   <h1 id="userpara" style="text-align: center;"></h1>
   <!-- Timer modal -->
-  <div id="my_modal" style="background-image: url('rps2.gif');">
+  <div id="my_modal" style="background-image: url('./res/rps2.gif');">
     <h2>Round #
       <span id="round_num">1</span>
     </h2>
@@ -200,7 +201,7 @@
   <div class="rps-container">
     <div class="rps-selector">
       <div class="rps-image">
-        <img id="rpsls" src="rpsls-all.png" style="width:320px;height:320px">
+        <img id="rpsls" src="./res/rpsls-all.png" style="width:320px;height:320px">
       </div>
       <br>
       <br>
