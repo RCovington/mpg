@@ -19,7 +19,6 @@
   <!--  -->
   <!-- <script src="customGestures.js" type="module"></script> -->
   <script src="customGestures.js" type="module"></script>
-
 </head>
 
 <body>
@@ -65,67 +64,68 @@
             ];
             const GE = new fp.GestureEstimator(knownGestures);
       */
-
-      const GE = new fp.GestureEstimator([
-        //          fp.Gestures.VictoryGesture,
-        //          fp.Gestures.ThumbsUpGesture,
-        loveYouGesture,
-        //          middleUp,
-        rock,
-        paper,
-        scissors,
-        lizard,
-        spock
-      ]);
-
+      /*
+            const customGestures = new fp.GestureEstimator([
+              //          fp.Gestures.VictoryGesture,
+              //          fp.Gestures.ThumbsUpGesture,
+              fp.Gestures.loveYouGesture,
+              //          middleUp,
+              fp.Gestures.rock,
+              fp.Gestures.paper,
+              fp.Gestures.scissors,
+              fp.Gestures.lizard,
+              fp.Gestures.spock
+            ]);
+            const GE = new fp.GestureEstimator(customGestures);
+      */
       // load handpose model
-      const model = await handpose.load();
+      //      const model = await handpose.load();
       console.log("Handpose model loaded");
-
-      // main estimation loop
-      const estimateHands = async () => {
-
-        // clear canvas overlay
-        ctx.clearRect(0, 0, config.video.width, config.video.height);
-        resultLayer.innerText = '';
-
-        // get hand landmarks from video
-        // Note: Handpose currently only detects one hand at a time
-        // Therefore the maximum number of predictions is 1
-        const predictions = await model.estimateHands(video, true);
-
-        for (let i = 0; i < predictions.length; i++) {
-
-          // draw colored dots at each predicted joint position
-          for (let part in predictions[i].annotations) {
-            for (let point of predictions[i].annotations[part]) {
-              drawPoint(ctx, point[0], point[1], 3, landmarkColors[part]);
-            }
-          }
-
-          // estimate gestures based on landmarks
-          // using a minimum score of 9 (out of 10)
-          // gesture candidates with lower score will not be returned
-          const est = GE.estimate(predictions[i].landmarks, 9);
-
-          if (est.gestures.length > 0) {
-
-            // find gesture with highest match score
-            let result = est.gestures.reduce((p, c) => {
-              return (p.score > c.score) ? p : c;
-            });
-
-            resultLayer.innerText = gestureStrings[result.name];
-          }
-
-          // update debug info
-          //          updateDebugInfo(est.poseData);
-        }
-
-        // ...and so on
-        setTimeout(() => { estimateHands(); }, 1000 / config.video.fps);
-      };
-
+      /*
+            // main estimation loop
+            const estimateHands = async () => {
+      
+              // clear canvas overlay
+              ctx.clearRect(0, 0, config.video.width, config.video.height);
+              resultLayer.innerText = '';
+      
+              // get hand landmarks from video
+              // Note: Handpose currently only detects one hand at a time
+              // Therefore the maximum number of predictions is 1
+              const predictions = await model.estimateHands(video, true);
+      
+              for (let i = 0; i < predictions.length; i++) {
+      
+                // draw colored dots at each predicted joint position
+                for (let part in predictions[i].annotations) {
+                  for (let point of predictions[i].annotations[part]) {
+                    drawPoint(ctx, point[0], point[1], 3, landmarkColors[part]);
+                  }
+                }
+      
+                // estimate gestures based on landmarks
+                // using a minimum score of 9 (out of 10)
+                // gesture candidates with lower score will not be returned
+                const est = GE.estimate(predictions[i].landmarks, 9);
+      
+                if (est.gestures.length > 0) {
+      
+                  // find gesture with highest match score
+                  let result = est.gestures.reduce((p, c) => {
+                    return (p.score > c.score) ? p : c;
+                  });
+      
+                  resultLayer.innerText = gestureStrings[result.name];
+                }
+      
+                // update debug info
+                //          updateDebugInfo(est.poseData);
+              }
+      
+              // ...and so on
+              setTimeout(() => { estimateHands(); }, 1000 / config.video.fps);
+            };
+      */
       estimateHands();
       console.log("Starting predictions");
     }
@@ -190,19 +190,17 @@
   <h2 id="title" style="text-align: center;">Rock-Paper-Scissors-Lizard-Spock</h2>
   <h1 id="userpara" style="text-align: center;"></h1>
   <!-- Timer modal -->
-  <div id="my_modal">
-    <span id="show_time">4</span>
+  <div id="my_modal" style="background-image: url('rps2.gif');">
     <h2>Round #
       <span id="round_num">1</span>
     </h2>
-    <h1 id="chant">ROCK</h1>
-    <img id="imgCtr">
+    <h3 id="chant">Ready?...</h3>
   </div>
   <!-- END Timer modal -->
   <div class="rps-container">
     <div class="rps-selector">
       <div class="rps-image">
-        <img src="rpsls-all.png" style="width:320px;height:320px">
+        <img id="rpsls" src="rpsls-all.png" style="width:320px;height:320px">
       </div>
       <br>
       <br>
@@ -297,7 +295,7 @@
           <div class="chat-wrapper">
             <form id="chat-form">
               <input id="chat" autocomplete="off" title="chat" />
-              <button id="say">Say</button>
+              <button id="say">Chat</button>
             </form>
           </div>
 

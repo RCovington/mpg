@@ -190,10 +190,22 @@ const addButtonListeners = () => {
     const button = document.getElementById(id);
     button.addEventListener('click', () => {
       localStorage.setItem('choice', id);
+      change(id);
       sock.emit('choice', id);
     });
   });
 };
+
+function change(id) {
+  var image = document.getElementById('rpsls');
+  image.src = './rpsls-all.png';
+  if (id == "none") { image.src = './rpsls-all.png' }
+  if (id == "Rock") { image.src = './rpsls-rock.png' }
+  if (id == "Paper") { image.src = './rpsls-paper.png' }
+  if (id == "Scissors") { image.src = './rpsls-scissors.png' }
+  if (id == "Lizard") { image.src = './rpsls-lizard.png' }
+  if (id == "Spock") { image.src = './rpsls-spock.png' }
+}
 
 writeEvent('Welcome to RPSLS, ' + localStorage.getItem('username') + "!");
 
@@ -215,7 +227,6 @@ addButtonListeners();
 // Count down modal code
 //-----------------------
 var my_modal = document.getElementById('my_modal');
-var span_tag = document.getElementById('show_time');
 var chant_tag = document.getElementById('chant');
 var countdown_call = '';
 var time_count = 4;
@@ -223,29 +234,23 @@ let chantMap = new Map([[4, 'Ready?'], [3, 'ROCK'], [2, 'PAPER'], [1, 'SCISSORS'
 
 
 function showModal() {
-  chant_tag.innerHTML = "ROCK";
+  chant_tag.innerHTML = "Ready?...";
   my_modal.style.display = "block";
   // countdown after show
-  countdown_call = setInterval(updateTime, 1000); // call for every 1 sec
+  countdown_call = setInterval(updateTime, 400); // call for every 1 sec
 }
-// show automatically after 1 sec
-// working
-//setTimeout(showModal, 1000) // 1000ms
 
-// close 
 function closeModal() {
   my_modal.style.display = "none";
+  change("none");
 }
-// setTimeout(closeModal, 3000) // 1000ms
-// no need
 
-// countdown time
 function updateTime() {
   time_count--;
-  span_tag.innerHTML = time_count;
   chant_tag.innerHTML = chantMap.get(time_count);
   if (time_count < 0) {
     clearInterval(countdown_call);
     closeModal();
   }
 }
+

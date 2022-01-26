@@ -16,7 +16,7 @@ button {
   padding: 3px 15px;
   color: white;
   line-height: 25px;
-  background-color: #00bcd4;
+  background-color: rgb(62, 120, 131);
   border: none;
   border-radius: 2px;
   cursor: pointer;
@@ -30,8 +30,8 @@ button:hover {
 }
 
 button.turn {
-  color: rgb(255, 64, 129);
-  background-color: white;
+  color: rgb(249, 237, 4);
+  background-color:rgb(62, 120, 131);
   box-shadow:none;
 }
 
@@ -64,13 +64,13 @@ img {
   height: 600px;
   border: 1px solid #333;
   box-sizing: border-box;
-  padding: 20px;
+  padding: 10px;
   text-align: center;
   background: #f1f1f1;
   /* making modal center */
   position: absolute;
   top: 50%;
-  left: 50%;
+  left: 70%;
   transform: translate(-50%, -50%);
   /* hide for the first time */
   display: none;
@@ -78,9 +78,14 @@ img {
 #my_modal h2{
   margin: 0px;
 }
-#show_time{
-  font-size: 18px;
-  color: red;
+#my_modal h3{
+  font-size: 80px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  
 }
 
 .td-status{
@@ -101,7 +106,7 @@ img {
     object-fit: contain;
   margin: 0;
     padding: 0;
-  background: #ff8888;
+  background: #3e7883;
 }
 
 .rps-players{
@@ -110,7 +115,7 @@ img {
   height: 100%;
   margin: 0;
     padding: 0;
-  background: #ffff66;
+  background: #242066;
 }
 
 .rps-wrapper {
