@@ -1,21 +1,22 @@
 
 function askName() {
-  let username = sessionStorage.getItem('username');
+  let username = localStorage.getItem('username');
 
   if (username === null) {
     username = prompt("To make your time on this website better, please enter your name.");
   }
 
   if (username != null) {
-    sessionStorage.setItem('username', username);
+    localStorage.setItem('username', username);
   } else {
     username = "Stranger" + Math.floor(Math.random() * (999 - 2) + 1);
-    sessionStorage.setItem('username', username);
+    localStorage.setItem('username', username);
   }
   document.getElementById("userpara").innerHTML = username;
-  // Check for NAME, CHOICE & TOTAL in sessionStorage and store it, if it doesn't exist 
-  sessionStorage.setItem('choice', 'none');
-  sessionStorage.setItem('total', '0');
+  // Check for NAME, CHOICE & TOTAL in localStorage and store it, if it doesn't exist 
+  localStorage.setItem('choice', 'none');
+  localStorage.setItem('total', '0');
+  localStorage.setItem('roundNumber', '1');
 
   sock.emit("playerJoin", username);
   sock.emit('choice', 'none');
@@ -85,9 +86,18 @@ const notReady = (text) => {
   // Modify user to table
   let row1 = document.getElementById(usrSockId);
   if (row1) { row1.cells[0].childNodes[0].data = 'NOT Ready'; }
-  // If it's this user, also modify the sessionStorage 'choice' item
+  // If it's this user, also modify the localStorage 'choice' item
   if (usrSockId == sock.id) {
-    sessionStorage.setItem('choice', 'none');
+    localStorage.setItem('choice', 'none');
+  }
+};
+
+function sleep(milliseconds) {
+  var start = new Date().getTime();
+  for (var i = 0; i < 1e7; i++) {
+    if ((new Date().getTime() - start) > milliseconds) {
+      break;
+    }
   }
 };
 
@@ -95,30 +105,36 @@ const results = (text) => {
   // Parameter is in the form of:: nameMap.forEach resultString += currUserName + " :" + currUserChoice + ";"...
   text = text.substring(0, text.length - 1);
   const usrChoices = text.split(';');
+
+  time_count = 4;
+  setTimeout(showModal, 1000);
+
   let ptsTotal = 0;
+  let roundNum = localStorage.getItem('roundNumber');
+  writeEvent("//-- ROUND #" + roundNum + " ----");
   usrChoices.forEach((element) => {
     let username = element.slice(0, element.indexOf(":"));
     let choice = element.substring(element.indexOf(":") + 1);
     let currPts = getPoints(choice);
     ptsTotal += currPts;
-    if (username.trim() == sessionStorage.getItem('username').trim()) {
+    if (username.trim() == localStorage.getItem('username').trim()) {
       writeEvent("You chose " + choice);
     } else {
       writeEvent(username + " chose " + choice + ": " + currPts);
     }
-
   });
-
+  localStorage.setItem('roundNumber', parseInt(roundNum) + 1);
+  document.getElementById("round_num").textContent = roundNum;
   // Calculate the total change and inform the server
-  //  let myTotal = parseFloat(sessionStorage.getItem('total'));
-  sock.emit("total", parseFloat(ptsTotal)); //parseFloat(myTotal) + parseFloat(ptsTotal));
+  sock.emit("total", parseFloat(ptsTotal));
   let winMsg = "Tie.";
   if (parseInt(ptsTotal) != 0) { winMsg = (parseInt(ptsTotal) > 0) ? "You WIN!!!" : "You lose." } else { winMsg }
   writeEvent("TOTAL: " + ptsTotal + " ...   " + winMsg);
+  writeEvent("//------------");
 };
 
 const getPoints = (oppChoice) => {
-  let myChoice = sessionStorage.getItem('choice');
+  let myChoice = localStorage.getItem('choice');
   oppChoice = oppChoice.trim();
   myChoice = myChoice.trim();
 
@@ -128,7 +144,7 @@ const getPoints = (oppChoice) => {
   else if (oppChoice == 'Spock') { if (myChoice == 'Paper' || myChoice == 'Lizard') { return 1; } else { return -1; } }
   else if (oppChoice == 'Rock') { if (myChoice == 'Paper' || myChoice == 'Spock') { return 1; } else { return -1; } }
   else if (oppChoice == 'Paper') { if (myChoice == 'Scissors' || myChoice == 'Lizard') { return 1; } else { return -1; } }
-  else if (oppChoice == 'Scissors') { if (myChoice == '"Rock' || myChoice == 'Spock') { return 1; } else { return -1; } }
+  else if (oppChoice == 'Scissors') { if (myChoice == 'Rock' || myChoice == 'Spock') { return 1; } else { return -1; } }
   else if (oppChoice == 'Lizard') { if (myChoice == 'Rock' || myChoice == 'Scissors') { return 1; } else { return -1; } }
 
 };
@@ -140,9 +156,11 @@ const total = (text) => {
   //Someones total has changed, update the table
   let row1 = document.getElementById(usrSockId);
   if (row1) { row1.cells[2].childNodes[0].data = total; }
-  // If it's this user, also modify the sessionStorage 'total' item
+  // If it's this user, also modify the localStorage 'total' item
   if (usrSockId == sock.id) {
-    sessionStorage.setItem('total', total);
+    localStorage.setItem('total', total);
+    let totColor = (parseFloat(total) < 0) ? "#FACADE" : "#00FF00";
+    document.getElementById(sock.id).style.backgroundColor = totColor;
   }
 };
 const writeEvent = (text) => {
@@ -164,20 +182,20 @@ const onFormSubmitted = (e) => {
   const text = input.value;
   input.value = '';
 
-  sock.emit('message', sessionStorage.getItem('username') + ": " + "<span>" + text + "</span>");
+  sock.emit('message', localStorage.getItem('username') + ": " + "<span>" + text + "</span>");
 };
 
 const addButtonListeners = () => {
   ['Rock', 'Paper', 'Scissors', 'Lizard', 'Spock'].forEach((id) => {
     const button = document.getElementById(id);
     button.addEventListener('click', () => {
-      sessionStorage.setItem('choice', id);
+      localStorage.setItem('choice', id);
       sock.emit('choice', id);
     });
   });
 };
 
-writeEvent('Welcome to RPSLS, ' + sessionStorage.getItem('username') + "!");
+writeEvent('Welcome to RPSLS, ' + localStorage.getItem('username') + "!");
 
 const sock = io();
 sock.on('message', writeEvent);
@@ -193,3 +211,41 @@ document
   .addEventListener('submit', onFormSubmitted);
 
 addButtonListeners();
+//-----------------------
+// Count down modal code
+//-----------------------
+var my_modal = document.getElementById('my_modal');
+var span_tag = document.getElementById('show_time');
+var chant_tag = document.getElementById('chant');
+var countdown_call = '';
+var time_count = 4;
+let chantMap = new Map([[4, 'Ready?'], [3, 'ROCK'], [2, 'PAPER'], [1, 'SCISSORS'], [0, 'SHOOT !!!']]);
+
+
+function showModal() {
+  chant_tag.innerHTML = "ROCK";
+  my_modal.style.display = "block";
+  // countdown after show
+  countdown_call = setInterval(updateTime, 1000); // call for every 1 sec
+}
+// show automatically after 1 sec
+// working
+//setTimeout(showModal, 1000) // 1000ms
+
+// close 
+function closeModal() {
+  my_modal.style.display = "none";
+}
+// setTimeout(closeModal, 3000) // 1000ms
+// no need
+
+// countdown time
+function updateTime() {
+  time_count--;
+  span_tag.innerHTML = time_count;
+  chant_tag.innerHTML = chantMap.get(time_count);
+  if (time_count < 0) {
+    clearInterval(countdown_call);
+    closeModal();
+  }
+}
